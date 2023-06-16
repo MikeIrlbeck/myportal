@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { siteDiaryIdSchema } from "./siteDiary";
 
-export const createSiteDiaryLaborerSchema = z
+export const createLaborerSchema = z
   .object({
     laborerType: z.string().trim().min(1, "A laborer type is required"),
     laborerAmount: z
@@ -15,6 +15,6 @@ const laborerIdSchema = z.object({
   laborerId: z.string().min(1, "A laborerId is required"),
 });
 
-export const updateLaborerSchema = createSiteDiaryLaborerSchema
+export const updateLaborerSchema = createLaborerSchema
   .omit({ siteDiaryId: true })
   .merge(laborerIdSchema);
