@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { siteDiaryIdSchema } from "./siteDiary";
 
-export const createSiteDiaryLaborerSchema = z
+export const createLaborerSchema = z
   .object({
     laborerType: z.string().trim().min(1, "A laborer type is required"),
     laborerAmount: z

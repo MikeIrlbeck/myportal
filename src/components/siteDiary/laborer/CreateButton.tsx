@@ -5,8 +5,8 @@ import { useState, type BaseSyntheticEvent } from "react";
 import { useForm } from "react-hook-form";
 import type { z } from "zod";
 import { useCreateLaborer } from "../../../hooks/laborer";
-import { createSiteDiaryLaborerSchema } from "../../../schema/laborer";
-type FormValues = z.infer<typeof createSiteDiaryLaborerSchema>;
+import { createLaborerSchema } from "../../../schema/laborer";
+type FormValues = z.infer<typeof createLaborerSchema>;
 
 const CreateButton = ({ siteDiaryId }: { siteDiaryId: string }) => {
   const {
@@ -15,7 +15,7 @@ const CreateButton = ({ siteDiaryId }: { siteDiaryId: string }) => {
     reset,
     formState: { errors },
   } = useForm<FormValues>({
-    resolver: zodResolver(createSiteDiaryLaborerSchema),
+    resolver: zodResolver(createLaborerSchema),
     defaultValues: {
       siteDiaryId: siteDiaryId,
       laborerType: "",
