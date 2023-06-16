@@ -6,8 +6,14 @@ export const createSiteDiarySchema = z.object({
   siteDiaryDate: z.date(),
 });
 
+const id = z.object({
+  siteDiaryId: z.string().min(1, "A siteDiaryId is required"),
+});
+
 export const updateSiteDiarySchema = createSiteDiarySchema
   .omit({ projectId: true })
-  .extend({
-    siteDiaryId: z.string().min(1, "A siteDiaryId is required"),
-  });
+  .merge(id);
+
+export const getSiteDiaryInfoSchema = id;
+
+export const deleteSiteDiarySchema = id;
