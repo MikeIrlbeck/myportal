@@ -6,14 +6,14 @@ export const createSiteDiarySchema = z.object({
   siteDiaryDate: z.date(),
 });
 
-const id = z.object({
+export const siteDiaryIdSchema = z.object({
   siteDiaryId: z.string().min(1, "A siteDiaryId is required"),
 });
 
 export const updateSiteDiarySchema = createSiteDiarySchema
   .omit({ projectId: true })
-  .merge(id);
+  .merge(siteDiaryIdSchema);
 
-export const getSiteDiaryInfoSchema = id;
+export const getSiteDiaryInfoSchema = siteDiaryIdSchema;
 
-export const deleteSiteDiarySchema = id;
+export const deleteSiteDiarySchema = siteDiaryIdSchema;

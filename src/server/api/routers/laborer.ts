@@ -1,12 +1,7 @@
 import { z } from "zod";
+import { createSiteDiaryLaborerSchema } from "../../../schema/laborer";
 import { trycatch } from "../../../utils/trycatch";
 import { createTRPCRouter, protectedProcedure } from "../trpc";
-
-export const createLaborerSchema = z.object({
-  laborerType: z.string(),
-  laborerAmount: z.number(),
-  siteDiaryId: z.string(),
-});
 
 export const updateLaborerSchema = z.object({
   laborerId: z.string(),
@@ -20,7 +15,7 @@ export const deleteLaborerSchema = z.object({
 
 export const laborerRouter = createTRPCRouter({
   createLaborer: protectedProcedure
-    .input(createLaborerSchema)
+    .input(createSiteDiaryLaborerSchema)
     .mutation(async ({ ctx, input }) => {
       return await trycatch({
         fn: () => {
