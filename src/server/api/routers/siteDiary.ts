@@ -1,6 +1,9 @@
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
-import { createSiteDiarySchema } from "../../../schema/siteDiary";
+import {
+  createSiteDiarySchema,
+  updateSiteDiarySchema,
+} from "../../../schema/siteDiary";
 import { trycatch } from "../../../utils/trycatch";
 import { createTRPCRouter, protectedProcedure } from "../trpc";
 
@@ -13,12 +16,6 @@ export const getSiteDiariesSchema = z.object({
 
 export const getSiteDiaryInfoSchema = z.object({
   siteDiaryId: z.string(),
-});
-
-export const updateSiteDiarySchema = z.object({
-  siteDiaryId: z.string(),
-  siteDiaryName: z.string(),
-  siteDiaryDate: z.date(),
 });
 
 export const deleteSiteDiarySchema = z.object({

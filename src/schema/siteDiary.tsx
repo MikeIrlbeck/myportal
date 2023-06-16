@@ -5,3 +5,9 @@ export const createSiteDiarySchema = z.object({
   siteDiaryName: z.string().trim().min(1, "A site diary name is required"),
   siteDiaryDate: z.date(),
 });
+
+export const updateSiteDiarySchema = createSiteDiarySchema
+  .omit({ projectId: true })
+  .extend({
+    siteDiaryId: z.string().min(1, "A siteDiaryId is required"),
+  });

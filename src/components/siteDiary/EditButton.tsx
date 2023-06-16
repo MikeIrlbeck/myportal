@@ -1,15 +1,16 @@
+import { zodResolver } from "@hookform/resolvers/zod";
 import * as Dialog from "@radix-ui/react-dialog";
 import { ChevronLeftIcon, ChevronRightIcon } from "@radix-ui/react-icons";
 import { Edit } from "@styled-icons/boxicons-solid/";
 import { useState, type BaseSyntheticEvent } from "react";
 import ReactDatePicker from "react-datepicker";
 import { Controller, useForm } from "react-hook-form";
+import type { z } from "zod";
 import { useUpdateSiteDiary } from "../../hooks/siteDiary";
+import { updateSiteDiarySchema } from "../../schema/siteDiary";
 
-type FormValues = {
-  date: Date;
-  name: string;
-};
+type FormValues = z.infer<typeof updateSiteDiarySchema>;
+
 type siteDiary = {
   id: string;
   name: string;
@@ -30,13 +31,15 @@ const EditButton = ({
     control,
     formState: { errors },
   } = useForm<FormValues>({
+    resolver: zodResolver(updateSiteDiarySchema),
     values: {
-      name: siteDiary.name,
-      date: siteDiary.date,
+      siteDiaryId: siteDiary.id,
+      siteDiaryName: siteDiary.name,
+      siteDiaryDate: siteDiary.date,
     },
     defaultValues: {
-      name: "",
-      date: new Date(),
+      siteDiaryName: "",
+      siteDiaryDate: new Date(),
     },
   });
   const { updateSiteDiary } = useUpdateSiteDiary({ projectId: projectId });
@@ -48,8 +51,8 @@ const EditButton = ({
     setOpen(false);
     updateSiteDiary({
       siteDiaryId: siteDiary.id,
-      siteDiaryDate: data.date,
-      siteDiaryName: data.name,
+      siteDiaryDate: data.siteDiaryDate,
+      siteDiaryName: data.siteDiaryName,
     });
   };
   const [open, setOpen] = useState(false);
@@ -75,14 +78,16 @@ const EditButton = ({
               <div className="sm:flex sm:flex-1 sm:flex-row sm:gap-2">
                 <input
                   className={`mb-3 mt-5 h-10 w-full rounded-lg border border-gray-300 px-4 py-2 text-center focus:border-blue-300 focus:outline-none sm:col-start-1 ${
-                    errors.name ? "border-red-400  focus:border-red-400 " : ""
+                    errors.siteDiaryName
+                      ? "border-red-400  focus:border-red-400 "
+                      : ""
                   }`}
-                  id="name"
-                  {...register("name", { required: true })}
+                  id="siteDiaryName"
+                  {...register("siteDiaryName", { required: true })}
                 />
 
                 <Controller
-                  name="date"
+                  name="siteDiaryDate"
                   control={control}
                   render={({ field }) => {
                     const { name, value, onChange } = field;
@@ -91,7 +96,7 @@ const EditButton = ({
                         name={name}
                         selected={value}
                         className={`mb-3 mt-5 h-10 px-4 py-2 text-center focus:border-blue-300 focus:outline-none sm:col-start-2 ${
-                          errors.date
+                          errors.siteDiaryDate
                             ? "border-red-400   focus:ring-red-400"
                             : ""
                         }`}
@@ -119,21 +124,21 @@ const EditButton = ({
                 />
               </div>
             </fieldset>
-            {errors.name && (
+            {errors.siteDiaryName && (
               <span className="flex justify-center text-xs italic text-red-400">
-                Name is required
+                {errors.siteDiaryName.message}
               </span>
             )}
-            {errors.date && (
+            {errors.siteDiaryDate && (
               <span className="flex justify-center text-xs italic text-red-400">
-                Date is required
+                {errors.siteDiaryDate.message}
               </span>
             )}
             <div className="mt-5 sm:mt-6 sm:grid sm:grid-flow-row-dense sm:grid-cols-2 sm:gap-3">
               <button
                 className="inline-flex w-full justify-center rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 disabled:bg-blue-50 disabled:text-blue-200 sm:col-start-2"
                 type="submit"
-                disabled={!!(errors.name || errors.date)}
+                disabled={!!(errors.siteDiaryName || errors.siteDiaryDate)}
               >
                 Update
               </button>
