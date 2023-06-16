@@ -1,15 +1,16 @@
+import { zodResolver } from "@hookform/resolvers/zod";
 import * as Dialog from "@radix-ui/react-dialog";
 import { ChevronLeftIcon, ChevronRightIcon } from "@radix-ui/react-icons";
 import { useState, type BaseSyntheticEvent } from "react";
 import ReactDatePicker from "react-datepicker";
 import type { ControllerRenderProps } from "react-hook-form";
 import { Controller, useForm } from "react-hook-form";
+import type { z } from "zod";
 import { useCreateSiteDiary } from "../../hooks/siteDiary";
+import { createSiteDiarySchema } from "../../schema/siteDiary";
 
-type FormValues = {
-  date: Date;
-  name: string;
-};
+type FormValues = z.infer<typeof createSiteDiarySchema>;
+
 const CreateButton = ({ projectId }: { projectId: string }) => {
   const {
     register,
@@ -18,9 +19,11 @@ const CreateButton = ({ projectId }: { projectId: string }) => {
     control,
     formState: { errors },
   } = useForm<FormValues>({
+    resolver: zodResolver(createSiteDiarySchema),
     defaultValues: {
-      date: new Date(),
-      name: "",
+      projectId: projectId,
+      siteDiaryDate: new Date(),
+      siteDiaryName: "",
     },
   });
   const { createSiteDiary } = useCreateSiteDiary();
@@ -33,8 +36,8 @@ const CreateButton = ({ projectId }: { projectId: string }) => {
     reset();
     createSiteDiary({
       projectId: projectId,
-      siteDiaryDate: data.date,
-      siteDiaryName: data.name,
+      siteDiaryDate: data.siteDiaryDate,
+      siteDiaryName: data.siteDiaryName,
     });
   };
   const [open, setOpen] = useState(false);
@@ -59,20 +62,22 @@ const CreateButton = ({ projectId }: { projectId: string }) => {
               <div className="sm:flex sm:flex-1 sm:flex-row sm:gap-2">
                 <input
                   className={`mb-3 mt-5 h-10 w-full rounded-lg border border-gray-300 px-4 py-2 text-center focus:border-blue-300 focus:outline-none sm:col-start-1 ${
-                    errors.name ? "border-red-400  focus:border-red-400 " : ""
+                    errors.siteDiaryName
+                      ? "border-red-400  focus:border-red-400 "
+                      : ""
                   }`}
-                  id="name"
+                  id="siteDiaryName"
                   placeholder="Name of new site diary"
-                  {...register("name", { required: true })}
+                  {...register("siteDiaryName", { required: true })}
                 />
 
                 <Controller
-                  name="date"
+                  name="siteDiaryDate"
                   control={control}
                   render={({
                     field,
                   }: {
-                    field: ControllerRenderProps<FormValues, "date">;
+                    field: ControllerRenderProps<FormValues, "siteDiaryDate">;
                   }) => {
                     const value = field.value;
                     const { onChange, name } = field;
@@ -81,18 +86,18 @@ const CreateButton = ({ projectId }: { projectId: string }) => {
                         name={name}
                         selected={value}
                         className={`mb-3 mt-5 h-10 px-4 py-2 text-center focus:border-blue-300 focus:outline-none sm:col-start-2 ${
-                          errors.date
+                          errors.siteDiaryDate
                             ? "border-red-400   focus:ring-red-400"
                             : ""
                         }`}
-                        onChange={(date) => {
-                          if (date) {
+                        onChange={(siteDiaryDate) => {
+                          if (siteDiaryDate) {
                             const d = new Date();
-                            date.setHours(d.getHours());
-                            date.setMinutes(d.getMinutes());
-                            date.setSeconds(d.getSeconds());
-                            date.setMilliseconds(d.getMilliseconds());
-                            onChange(date);
+                            siteDiaryDate.setHours(d.getHours());
+                            siteDiaryDate.setMinutes(d.getMinutes());
+                            siteDiaryDate.setSeconds(d.getSeconds());
+                            siteDiaryDate.setMilliseconds(d.getMilliseconds());
+                            onChange(siteDiaryDate);
                           }
                         }}
                         previousMonthButtonLabel=<ChevronLeftIcon className="h-6 w-6 text-slate-500" />
@@ -105,21 +110,21 @@ const CreateButton = ({ projectId }: { projectId: string }) => {
                 />
               </div>
             </fieldset>
-            {errors.name && (
+            {errors.siteDiaryName && (
               <span className="flex justify-center text-xs italic text-red-400">
-                Name is required
+                {errors.siteDiaryName.message}
               </span>
             )}
-            {errors.date && (
+            {errors.siteDiaryDate && (
               <span className="flex justify-center text-xs italic text-red-400">
-                Date is required
+                {errors.siteDiaryDate.message}
               </span>
             )}
             <div className="mt-5 sm:mt-6 sm:grid sm:grid-flow-row-dense sm:grid-cols-2 sm:gap-3">
               <button
                 className="inline-flex w-full justify-center rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 disabled:bg-blue-50 disabled:text-blue-200 sm:col-start-2"
                 type="submit"
-                disabled={!!(errors.name || errors.date)}
+                disabled={!!(errors.siteDiaryName || errors.siteDiaryDate)}
               >
                 Create
               </button>
