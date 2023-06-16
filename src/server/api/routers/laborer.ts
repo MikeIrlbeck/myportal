@@ -1,13 +1,10 @@
 import { z } from "zod";
-import { createSiteDiaryLaborerSchema } from "../../../schema/laborer";
+import {
+  createSiteDiaryLaborerSchema,
+  updateLaborerSchema,
+} from "../../../schema/laborer";
 import { trycatch } from "../../../utils/trycatch";
 import { createTRPCRouter, protectedProcedure } from "../trpc";
-
-export const updateLaborerSchema = z.object({
-  laborerId: z.string(),
-  laborerType: z.string(),
-  laborerAmount: z.number(),
-});
 
 export const deleteLaborerSchema = z.object({
   laborerId: z.string(),

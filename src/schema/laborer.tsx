@@ -10,3 +10,11 @@ export const createSiteDiaryLaborerSchema = z
       .max(2147483647, { message: "Number must be below 2147483647" }),
   })
   .merge(siteDiaryIdSchema);
+
+const laborerIdSchema = z.object({
+  laborerId: z.string().min(1, "A laborerId is required"),
+});
+
+export const updateLaborerSchema = createSiteDiaryLaborerSchema
+  .omit({ siteDiaryId: true })
+  .merge(laborerIdSchema);
