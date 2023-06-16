@@ -90,14 +90,14 @@ const CreateButton = ({ projectId }: { projectId: string }) => {
                             ? "border-red-400   focus:ring-red-400"
                             : ""
                         }`}
-                        onChange={(siteDiaryDate) => {
-                          if (siteDiaryDate) {
+                        onChange={(date) => {
+                          if (date) {
                             const d = new Date();
-                            siteDiaryDate.setHours(d.getHours());
-                            siteDiaryDate.setMinutes(d.getMinutes());
-                            siteDiaryDate.setSeconds(d.getSeconds());
-                            siteDiaryDate.setMilliseconds(d.getMilliseconds());
-                            onChange(siteDiaryDate);
+                            date.setHours(d.getHours());
+                            date.setMinutes(d.getMinutes());
+                            date.setSeconds(d.getSeconds());
+                            date.setMilliseconds(d.getMilliseconds());
+                            onChange(date);
                           }
                         }}
                         previousMonthButtonLabel=<ChevronLeftIcon className="h-6 w-6 text-slate-500" />
