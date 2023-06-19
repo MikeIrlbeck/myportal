@@ -27,7 +27,7 @@ const StatusDropdown = ({ value, onChange }: DropdownProps) => {
         </Select.Icon>
       </Select.Trigger>
       <Select.Portal>
-        <Select.Content className="overflow-hidden rounded-md border border-blue-300 bg-white">
+        <Select.Content className="z-20 overflow-hidden rounded-md border border-blue-300 bg-white">
           <Select.ScrollUpButton className="flex h-6 items-center justify-center bg-white text-blue-600">
             <ChevronUpIcon />
           </Select.ScrollUpButton>
