@@ -1,15 +1,10 @@
-import { MaterialUnit } from "@prisma/client";
 import { z } from "zod";
-import { createMaterialSchema } from "../../../schema/material";
+import {
+  createMaterialSchema,
+  updateMaterialSchema,
+} from "../../../schema/material";
 import { trycatch } from "../../../utils/trycatch";
 import { createTRPCRouter, protectedProcedure } from "../trpc";
-
-export const updateMaterialSchema = z.object({
-  materialType: z.string(),
-  materialId: z.string(),
-  materialUnits: z.nativeEnum(MaterialUnit),
-  materialAmount: z.number(),
-});
 
 export const deleteMaterialSchema = z.object({
   materialId: z.string(),
