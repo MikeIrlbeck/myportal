@@ -1,16 +1,13 @@
-import type { MaterialUnit } from "@prisma/client";
+import { zodResolver } from "@hookform/resolvers/zod";
 import * as Dialog from "@radix-ui/react-dialog";
 import { PlusSquareFill } from "@styled-icons/bootstrap";
 import { useState, type BaseSyntheticEvent } from "react";
 import { Controller, useForm } from "react-hook-form";
+import type { z } from "zod";
 import { useCreateMaterial } from "../../../hooks/material";
+import { createMaterialSchema } from "../../../schema/material";
 import UnitsDropDown from "./UnitsDropDown";
-
-type FormValues = {
-  type: string;
-  units: MaterialUnit;
-  amount: number;
-};
+type FormValues = z.infer<typeof createMaterialSchema>;
 
 const CreateButton = ({ siteDiaryId }: { siteDiaryId: string }) => {
   const {
@@ -20,10 +17,12 @@ const CreateButton = ({ siteDiaryId }: { siteDiaryId: string }) => {
     control,
     formState: { errors },
   } = useForm<FormValues>({
+    resolver: zodResolver(createMaterialSchema),
     defaultValues: {
-      type: "",
-      units: "M2",
-      amount: 1,
+      siteDiaryId: siteDiaryId,
+      materialType: "",
+      materialUnits: "M2",
+      materialAmount: 1,
     },
   });
   const { createMaterial } = useCreateMaterial();
@@ -35,9 +34,9 @@ const CreateButton = ({ siteDiaryId }: { siteDiaryId: string }) => {
     setOpen(false);
     reset();
     createMaterial({
-      materialType: data.type,
-      materialUnits: data.units,
-      materialAmount: data.amount,
+      materialType: data.materialType,
+      materialUnits: data.materialUnits,
+      materialAmount: data.materialAmount,
       siteDiaryId: siteDiaryId,
     });
   };
@@ -62,28 +61,30 @@ const CreateButton = ({ siteDiaryId }: { siteDiaryId: string }) => {
               <div className="flex flex-1 flex-col">
                 <label
                   className="mb-1 w-24 text-left text-base capitalize text-gray-900 sm:flex sm:items-end"
-                  htmlFor="type"
+                  htmlFor="materialType"
                 >
                   Type
                 </label>
                 <input
                   className={`mb-3 h-10 w-full rounded-lg border border-gray-300 px-4 py-0 text-center focus:border-blue-300 focus:outline-none sm:mb-0 sm:text-left ${
-                    errors.type ? "border-red-400  focus:border-red-400 " : ""
+                    errors.materialType
+                      ? "border-red-400  focus:border-red-400 "
+                      : ""
                   }`}
-                  id="type"
+                  id="materialType"
                   placeholder="e.g. Plywood"
-                  {...register("type", { required: true })}
+                  {...register("materialType", { required: true })}
                 />
               </div>
               <div className="flex flex-col">
                 <label
                   className="mb-1 w-24 text-left text-base capitalize text-gray-900 sm:flex sm:items-end"
-                  htmlFor="units"
+                  htmlFor="materialUnits"
                 >
                   Units
                 </label>
                 <Controller
-                  name="units"
+                  name="materialUnits"
                   control={control}
                   rules={{ required: true }}
                   render={({ field: { onChange, value } }) => {
@@ -100,44 +101,52 @@ const CreateButton = ({ siteDiaryId }: { siteDiaryId: string }) => {
               <div className="flex flex-1 flex-col">
                 <label
                   className="mb-1 w-24 text-left text-base capitalize text-gray-900 sm:flex sm:items-end"
-                  htmlFor="amount"
+                  htmlFor="materialAmount"
                 >
                   Quantity
                 </label>
                 <input
                   className={`mb-3 h-10 w-full rounded-lg border border-gray-300 px-4 py-0 text-center focus:border-blue-300 focus:outline-none sm:mb-0 sm:text-left ${
-                    errors.amount ? "border-red-400  focus:border-red-400 " : ""
+                    errors.materialAmount
+                      ? "border-red-400  focus:border-red-400 "
+                      : ""
                   }`}
-                  id="amount"
+                  id="materialAmount"
                   placeholder="e.g. 5"
                   type="number"
-                  {...register("amount", {
+                  {...register("materialAmount", {
                     required: true,
                     valueAsNumber: true,
                   })}
                 />
               </div>
             </fieldset>
-            {errors.type && (
+            {errors.materialType && (
               <span className="flex justify-center text-xs italic text-red-400">
-                Type is required
+                {errors.materialType.message}
               </span>
             )}
-            {errors.units && (
+            {errors.materialUnits && (
               <span className="flex justify-center text-xs italic text-red-400">
-                Units is required
+                {errors.materialUnits.message}
               </span>
             )}
-            {errors.amount && (
+            {errors.materialAmount && (
               <span className="flex justify-center text-xs italic text-red-400">
-                Quantity is required
+                {errors.materialAmount.message}
               </span>
             )}
             <div className="mt-5 sm:mt-6 sm:grid sm:grid-flow-row-dense sm:grid-cols-2 sm:gap-3">
               <button
                 className="inline-flex w-full justify-center rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 disabled:bg-blue-50 disabled:text-blue-200 sm:col-start-2"
                 type="submit"
-                disabled={!!(errors.type || errors.units || errors.amount)}
+                disabled={
+                  !!(
+                    errors.materialType ||
+                    errors.materialUnits ||
+                    errors.materialAmount
+                  )
+                }
               >
                 Create
               </button>
