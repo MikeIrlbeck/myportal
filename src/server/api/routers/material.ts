@@ -1,14 +1,10 @@
-import { z } from "zod";
 import {
   createMaterialSchema,
+  deleteMaterialSchema,
   updateMaterialSchema,
 } from "../../../schema/material";
 import { trycatch } from "../../../utils/trycatch";
 import { createTRPCRouter, protectedProcedure } from "../trpc";
-
-export const deleteMaterialSchema = z.object({
-  materialId: z.string(),
-});
 
 export const materialRouter = createTRPCRouter({
   createMaterial: protectedProcedure

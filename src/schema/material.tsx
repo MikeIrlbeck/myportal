@@ -20,3 +20,5 @@ const materialIdSchema = z.object({
 export const updateMaterialSchema = createMaterialSchema
   .omit({ siteDiaryId: true })
   .merge(materialIdSchema);
+
+export const deleteMaterialSchema = materialIdSchema;
