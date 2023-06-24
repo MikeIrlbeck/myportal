@@ -1,11 +1,7 @@
 import { z } from "zod";
+import { createSiteProblemSchema } from "../../../schema/siteProblem";
 import { trycatch } from "../../../utils/trycatch";
 import { createTRPCRouter, protectedProcedure } from "../trpc";
-
-export const createSiteProblemSchema = z.object({
-  siteProblemComments: z.string(),
-  siteDiaryId: z.string(),
-});
 
 export const updateSiteProblemSchema = z.object({
   siteProblemComments: z.string(),
