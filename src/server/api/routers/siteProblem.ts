@@ -1,16 +1,10 @@
-import { z } from "zod";
-import { createSiteProblemSchema } from "../../../schema/siteProblem";
+import {
+  createSiteProblemSchema,
+  deleteSiteProblemSchema,
+  updateSiteProblemSchema,
+} from "../../../schema/siteProblem";
 import { trycatch } from "../../../utils/trycatch";
 import { createTRPCRouter, protectedProcedure } from "../trpc";
-
-export const updateSiteProblemSchema = z.object({
-  siteProblemComments: z.string(),
-  siteProblemId: z.string(),
-});
-
-export const deleteSiteProblemSchema = z.object({
-  siteProblemId: z.string(),
-});
 
 export const siteProblemRouter = createTRPCRouter({
   createSiteProblem: protectedProcedure

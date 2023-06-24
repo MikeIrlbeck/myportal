@@ -14,3 +14,5 @@ const siteProblemIdSchema = z.object({
 export const updateSiteProblemSchema = createSiteProblemSchema
   .omit({ siteDiaryId: true })
   .merge(siteProblemIdSchema);
+
+export const deleteSiteProblemSchema = siteProblemIdSchema;
