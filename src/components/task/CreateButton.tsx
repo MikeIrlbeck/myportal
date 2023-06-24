@@ -1,4 +1,3 @@
-import type { TaskStatus } from "@prisma/client";
 import * as Dialog from "@radix-ui/react-dialog";
 import { PlusIcon } from "@radix-ui/react-icons";
 import classNames from "classnames";
@@ -7,21 +6,20 @@ import { Controller, useForm } from "react-hook-form";
 import { useCreateTask } from "../../hooks/task";
 import { useGetUsersForProject } from "../../hooks/user";
 import AssigneeDropdown from "./AssigneeDropdown";
-import type { assignee } from "./EditButton";
 import StatusDropdown from "./StatusDropDown";
 
-type FormValues = {
-  description: string;
-  assignee: assignee | null;
-  status: TaskStatus;
-};
+import { zodResolver } from "@hookform/resolvers/zod";
+import type { z } from "zod";
+import { createTaskSchema } from "../../schema/task";
+
+type FormValues = z.infer<typeof createTaskSchema>;
 
 const CreateButton = ({
   projectId,
-  description,
+  taskDescription,
 }: {
   projectId: string;
-  description?: string;
+  taskDescription?: string;
 }) => {
   const {
     register,
@@ -30,10 +28,12 @@ const CreateButton = ({
     control,
     formState: { errors },
   } = useForm<FormValues>({
+    resolver: zodResolver(createTaskSchema),
     defaultValues: {
-      description: "",
-      assignee: null,
-      status: "NOT_STARTED",
+      projectId: projectId,
+      taskDescription: "",
+      taskAssignedTo: null,
+      taskStatus: "NOT_STARTED",
     },
   });
   const { createTask } = useCreateTask({ projectId: projectId });
@@ -48,9 +48,9 @@ const CreateButton = ({
     reset();
     createTask({
       projectId: projectId,
-      taskDescription: data.description,
-      taskAssignedTo: data.assignee || null,
-      taskStatus: data.status,
+      taskDescription: data.taskDescription,
+      taskAssignedTo: data.taskAssignedTo,
+      taskStatus: data.taskStatus,
     });
   };
   const [open, setOpen] = useState(false);
@@ -64,12 +64,12 @@ const CreateButton = ({
           >
             <PlusIcon
               className={classNames(
-                description ? " -ml-0.5 mr-1.5" : "",
+                taskDescription ? " -ml-0.5 mr-1.5" : "",
                 "h-5 w-5"
               )}
               aria-hidden="true"
             />
-            {description}
+            {taskDescription}
           </button>
         </span>
       </Dialog.Trigger>
@@ -87,16 +87,16 @@ const CreateButton = ({
               <div className="flex flex-1 flex-col gap-3">
                 <input
                   className={`mb-3 h-10 w-full rounded-lg border border-gray-300 px-4 py-0 text-center focus:border-blue-300 focus:outline-none sm:mb-0 ${
-                    errors.description
+                    errors.taskDescription
                       ? "border-red-400  focus:border-red-400 "
                       : ""
                   }`}
-                  id="description"
+                  id="taskDescription"
                   placeholder="e.g. Buy more materials"
-                  {...register("description", { required: true })}
+                  {...register("taskDescription", { required: true })}
                 />
                 <Controller
-                  name="assignee"
+                  name="taskAssignedTo"
                   control={control}
                   render={({ field }) => {
                     const { onChange } = field;
@@ -111,7 +111,7 @@ const CreateButton = ({
                 />
 
                 <Controller
-                  name="status"
+                  name="taskStatus"
                   control={control}
                   rules={{ required: true }}
                   render={({ field }) => {
@@ -127,21 +127,21 @@ const CreateButton = ({
                 />
               </div>
             </fieldset>
-            {errors.description && (
+            {errors.taskDescription && (
               <span className="flex justify-center text-xs italic text-red-400">
-                Description is required
+                {errors.taskDescription.message}
               </span>
             )}
-            {errors.status && (
+            {errors.taskStatus && (
               <span className="flex justify-center text-xs italic text-red-400">
-                Status is required
+                {errors.taskStatus.message}
               </span>
             )}
             <div className="mt-5 sm:mt-6 sm:grid sm:grid-flow-row-dense sm:grid-cols-2 sm:gap-3">
               <button
                 className="inline-flex w-full justify-center rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 disabled:bg-blue-50 disabled:text-blue-200 sm:col-start-2"
                 type="submit"
-                disabled={!!(errors.description || errors.status)}
+                disabled={!!(errors.taskDescription || errors.taskStatus)}
               >
                 Create
               </button>

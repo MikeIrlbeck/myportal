@@ -1,22 +1,7 @@
 import { z } from "zod";
+import { createTaskSchema } from "../../../schema/task";
 import { trycatch } from "../../../utils/trycatch";
 import { createTRPCRouter, protectedProcedure } from "../trpc";
-
-export const createTaskSchema = z.object({
-  taskDescription: z.string(),
-  taskStatus: z
-    .enum(["NOT_STARTED", "IN_PROGRESS", "COMPLETED"])
-    .default("NOT_STARTED"),
-  projectId: z.string(),
-  taskAssignedTo: z
-    .object({
-      id: z.string(),
-      name: z.string().nullable(),
-      email: z.string().nullable(),
-      image: z.string().nullable(),
-    })
-    .nullable(),
-});
 
 export const getTasksSchema = z.object({
   projectId: z.string(),
