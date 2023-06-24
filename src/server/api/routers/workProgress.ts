@@ -1,11 +1,7 @@
 import { z } from "zod";
+import { createWorkProgressSchema } from "../../../schema/workProgress";
 import { trycatch } from "../../../utils/trycatch";
 import { createTRPCRouter, protectedProcedure } from "../trpc";
-
-export const createWorkProgressSchema = z.object({
-  workProgressComments: z.string(),
-  siteDiaryId: z.string(),
-});
 
 export const updateWorkProgressSchema = z.object({
   workProgressComments: z.string(),
