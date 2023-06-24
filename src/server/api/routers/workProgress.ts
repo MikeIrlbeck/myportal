@@ -1,16 +1,10 @@
-import { z } from "zod";
-import { createWorkProgressSchema } from "../../../schema/workProgress";
+import {
+  createWorkProgressSchema,
+  deleteWorkProgressSchema,
+  updateWorkProgressSchema,
+} from "../../../schema/workProgress";
 import { trycatch } from "../../../utils/trycatch";
 import { createTRPCRouter, protectedProcedure } from "../trpc";
-
-export const updateWorkProgressSchema = z.object({
-  workProgressComments: z.string(),
-  workProgressId: z.string(),
-});
-
-export const deleteWorkProgressSchema = z.object({
-  workProgressId: z.string(),
-});
 
 export const workProgressRouter = createTRPCRouter({
   createWorkProgress: protectedProcedure

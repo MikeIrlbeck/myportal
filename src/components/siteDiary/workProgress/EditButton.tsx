@@ -5,9 +5,12 @@ import { useForm } from "react-hook-form";
 import { useUpdateWorkProgress } from "../../../hooks/workProgress";
 import type { WorkProgress } from "./workProgressView";
 
-type FormValues = {
-  comments: string;
-};
+import { zodResolver } from "@hookform/resolvers/zod";
+import type { z } from "zod";
+import { updateWorkProgressSchema } from "../../../schema/workProgress";
+
+type FormValues = z.infer<typeof updateWorkProgressSchema>;
+
 const EditButton = ({
   workProgress,
   siteDiaryId,
@@ -20,8 +23,14 @@ const EditButton = ({
     handleSubmit,
     formState: { errors },
   } = useForm<FormValues>({
+    resolver: zodResolver(updateWorkProgressSchema),
     values: {
-      comments: workProgress.comments,
+      workProgressId: workProgress.id,
+      workProgressComments: workProgress.comments,
+    },
+    defaultValues: {
+      workProgressId: workProgress.id,
+      workProgressComments: "",
     },
   });
   const { updateWorkProgress } = useUpdateWorkProgress({
@@ -35,7 +44,7 @@ const EditButton = ({
     setOpen(false);
     updateWorkProgress({
       workProgressId: workProgress.id,
-      workProgressComments: data.comments,
+      workProgressComments: data.workProgressComments,
     });
   };
   const [open, setOpen] = useState(false);
@@ -59,28 +68,28 @@ const EditButton = ({
               <div className="sm:flex sm:flex-1 sm:flex-row sm:gap-2">
                 <input
                   className={`mb-3 mt-5 h-10 w-full rounded-lg border border-gray-300 px-4 py-2 text-center focus:border-blue-300 focus:outline-none sm:col-start-1 sm:text-left ${
-                    errors.comments
+                    errors.workProgressComments
                       ? "border-red-400  focus:border-red-400 "
                       : ""
                   }`}
-                  id="comments"
+                  id="workProgressComments"
                   placeholder={"e.g. Bob poured cement"}
-                  {...register("comments", {
+                  {...register("workProgressComments", {
                     required: true,
                   })}
                 />
               </div>
             </fieldset>
-            {errors.comments && (
+            {errors.workProgressComments && (
               <span className="flex justify-center text-xs italic text-red-400">
-                A comment is required
+                {errors.workProgressComments.message}
               </span>
             )}
             <div className="mt-5 sm:mt-6 sm:grid sm:grid-flow-row-dense sm:grid-cols-2 sm:gap-3">
               <button
                 className="inline-flex w-full justify-center rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 disabled:bg-blue-50 disabled:text-blue-200 sm:col-start-2"
                 type="submit"
-                disabled={!!errors.comments}
+                disabled={!!errors.workProgressComments}
               >
                 Update
               </button>
