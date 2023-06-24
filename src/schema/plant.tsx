@@ -18,3 +18,5 @@ const plantIdSchema = z.object({
 export const updatePlantSchema = createPlantSchema
   .omit({ siteDiaryId: true })
   .merge(plantIdSchema);
+
+export const deletePlantSchema = plantIdSchema;

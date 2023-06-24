@@ -1,17 +1,10 @@
-import { z } from "zod";
-import { createPlantSchema } from "../../../schema/plant";
+import {
+  createPlantSchema,
+  deletePlantSchema,
+  updatePlantSchema,
+} from "../../../schema/plant";
 import { trycatch } from "../../../utils/trycatch";
 import { createTRPCRouter, protectedProcedure } from "../trpc";
-
-export const updatePlantSchema = z.object({
-  plantId: z.string(),
-  plantType: z.string(),
-  plantAmount: z.number(),
-});
-
-export const deletePlantSchema = z.object({
-  plantId: z.string(),
-});
 
 export const plantRouter = createTRPCRouter({
   createPlant: protectedProcedure
