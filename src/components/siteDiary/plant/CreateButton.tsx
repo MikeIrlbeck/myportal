@@ -1,14 +1,13 @@
-import { zodResolver } from "@hookform/resolvers/zod";
 import * as Dialog from "@radix-ui/react-dialog";
 import { PlusSquareFill } from "@styled-icons/bootstrap";
 import { useState, type BaseSyntheticEvent } from "react";
 import { useForm } from "react-hook-form";
-import type { z } from "zod";
 import { useCreatePlant } from "../../../hooks/plant";
-import { createPlantSchema } from "../../../schema/plant";
 
-type FormValues = z.infer<typeof createPlantSchema>;
-
+type FormValues = {
+  type: string;
+  amount: number;
+};
 const CreateButton = ({ siteDiaryId }: { siteDiaryId: string }) => {
   const {
     register,
@@ -16,11 +15,9 @@ const CreateButton = ({ siteDiaryId }: { siteDiaryId: string }) => {
     reset,
     formState: { errors },
   } = useForm<FormValues>({
-    resolver: zodResolver(createPlantSchema),
     defaultValues: {
-      siteDiaryId: siteDiaryId,
-      plantType: "",
-      plantAmount: 1,
+      type: "",
+      amount: 1,
     },
   });
   const { createPlant } = useCreatePlant();
@@ -32,8 +29,8 @@ const CreateButton = ({ siteDiaryId }: { siteDiaryId: string }) => {
     setOpen(false);
     reset();
     createPlant({
-      plantType: data.plantType,
-      plantAmount: data.plantAmount,
+      plantType: data.type,
+      plantAmount: data.amount,
       siteDiaryId: siteDiaryId,
     });
   };
@@ -58,60 +55,56 @@ const CreateButton = ({ siteDiaryId }: { siteDiaryId: string }) => {
               <div className="flex flex-grow flex-col">
                 <label
                   className="mb-1 w-24 text-left text-base capitalize text-gray-900  sm:flex sm:items-end"
-                  htmlFor="plantType"
+                  htmlFor="type"
                 >
                   Type
                 </label>
                 <input
                   className={`mb-3 h-10 w-full rounded-lg border border-gray-300 px-4 py-0 text-center focus:border-blue-300 focus:outline-none  sm:mb-0 sm:text-left ${
-                    errors.plantType
-                      ? "border-red-400  focus:border-red-400 "
-                      : ""
+                    errors.type ? "border-red-400  focus:border-red-400 " : ""
                   }`}
-                  id="plantType"
+                  id="type"
                   placeholder="e.g. Excavator"
-                  {...register("plantType", { required: true })}
+                  {...register("type", { required: true })}
                 />
               </div>
 
               <div className="flex flex-grow flex-col">
                 <label
                   className="mb-1 w-24 text-left text-base capitalize text-gray-900  sm:flex sm:items-end"
-                  htmlFor="plantAmount"
+                  htmlFor="amount"
                 >
                   Quantity
                 </label>
                 <input
                   className={`mb-3 h-10 w-full rounded-lg border border-gray-300 px-4 py-0 text-center focus:border-blue-300 focus:outline-none  sm:mb-0 sm:text-left ${
-                    errors.plantAmount
-                      ? "border-red-400  focus:border-red-400 "
-                      : ""
+                    errors.amount ? "border-red-400  focus:border-red-400 " : ""
                   }`}
-                  id="plantAmount"
+                  id="amount"
                   placeholder="Nr."
                   type="number"
-                  {...register("plantAmount", {
+                  {...register("amount", {
                     required: true,
                     valueAsNumber: true,
                   })}
                 />
               </div>
             </fieldset>
-            {errors.plantType && (
+            {errors.type && (
               <span className="flex justify-center text-xs italic text-red-400">
-                {errors.plantType.message}
+                Type is required
               </span>
             )}
-            {errors.plantAmount && (
+            {errors.amount && (
               <span className="flex justify-center text-xs italic text-red-400">
-                {errors.plantAmount.message}
+                Quantity is required
               </span>
             )}
             <div className="mt-5 sm:mt-6 sm:grid sm:grid-flow-row-dense sm:grid-cols-2 sm:gap-3">
               <button
                 className="inline-flex w-full justify-center rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 disabled:bg-blue-50 disabled:text-blue-200 sm:col-start-2"
                 type="submit"
-                disabled={!!(errors.plantType || errors.plantAmount)}
+                disabled={!!(errors.type || errors.amount)}
               >
                 Create
               </button>
