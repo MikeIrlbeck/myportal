@@ -1,12 +1,7 @@
 import { z } from "zod";
+import { createPlantSchema } from "../../../schema/plant";
 import { trycatch } from "../../../utils/trycatch";
 import { createTRPCRouter, protectedProcedure } from "../trpc";
-
-export const createPlantSchema = z.object({
-  plantType: z.string(),
-  plantAmount: z.number(),
-  siteDiaryId: z.string(),
-});
 
 export const updatePlantSchema = z.object({
   plantId: z.string(),
