@@ -1,16 +1,16 @@
+import { zodResolver } from "@hookform/resolvers/zod";
 import * as Dialog from "@radix-ui/react-dialog";
 import { PlusIcon } from "@radix-ui/react-icons";
 import classNames from "classnames";
+import { useSession } from "next-auth/react";
 import { useState, type BaseSyntheticEvent } from "react";
 import { Controller, useForm } from "react-hook-form";
+import type { z } from "zod";
 import { useCreateTask } from "../../hooks/task";
 import { useGetUsersForProject } from "../../hooks/user";
+import { createTaskSchema } from "../../schema/task";
 import AssigneeDropdown from "./AssigneeDropdown";
 import StatusDropdown from "./StatusDropDown";
-
-import { zodResolver } from "@hookform/resolvers/zod";
-import type { z } from "zod";
-import { createTaskSchema } from "../../schema/task";
 
 type FormValues = z.infer<typeof createTaskSchema>;
 
@@ -21,6 +21,7 @@ const CreateButton = ({
   projectId: string;
   taskDescription?: string;
 }) => {
+  const session = useSession();
   const {
     register,
     handleSubmit,
@@ -31,6 +32,7 @@ const CreateButton = ({
     resolver: zodResolver(createTaskSchema),
     defaultValues: {
       projectId: projectId,
+      createdById: session.data?.user?.id,
       taskDescription: "",
       taskAssignedTo: null,
       taskStatus: "NOT_STARTED",
@@ -48,6 +50,7 @@ const CreateButton = ({
     reset();
     createTask({
       projectId: projectId,
+      createdById: session.data?.user?.id,
       taskDescription: data.taskDescription,
       taskAssignedTo: data.taskAssignedTo,
       taskStatus: data.taskStatus,

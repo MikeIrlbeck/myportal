@@ -18,7 +18,7 @@ export const taskRouter = createTRPCRouter({
             data: {
               description: input.taskDescription,
               status: input.taskStatus,
-              createdById: ctx.session.user.id,
+              createdById: input.createdById || ctx.session.user.id,
               assignedToId: input.taskAssignedTo?.id,
               projectId: input.projectId,
             },

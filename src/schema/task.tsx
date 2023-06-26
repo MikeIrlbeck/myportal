@@ -14,7 +14,6 @@ export const getTasksSchema = z.object({
   ),
 });
 
-// TODO: where should createdBy go?
 export const createTaskSchema = z.object({
   projectId: z.string().min(1, "A projectId is required"),
   taskDescription: z.string().trim().min(1, "A description is required"),
@@ -27,13 +26,14 @@ export const createTaskSchema = z.object({
       image: z.string().nullable(),
     })
     .nullable(),
+  createdById: z.string().trim().min(1, "A createdById is required").optional(),
 });
 const taskIdSchema = z.object({
   taskId: z.string().min(1, "A taskId is required"),
 });
 
 export const updateTaskSchema = createTaskSchema
-  .omit({ projectId: true })
+  .omit({ projectId: true, createdById: true })
   .merge(taskIdSchema)
   .extend({ limit: z.number().min(1).max(10).default(5).optional() });
 
