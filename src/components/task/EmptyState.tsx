@@ -24,7 +24,7 @@ const EmptyState = ({ projectId }: { projectId: string }) => {
         </h3>
         <p className="mt-1 text-sm text-gray-500">Create a task?</p>
         <div className="mt-6 flex justify-center">
-          <CreateButton projectId={projectId} description="New Task" />
+          <CreateButton projectId={projectId} taskDescription="New Task" />
         </div>
       </div>
     </div>
