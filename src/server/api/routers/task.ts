@@ -1,45 +1,12 @@
-import { z } from "zod";
-import { createTaskSchema } from "../../../schema/task";
+import {
+  createTaskSchema,
+  deleteTaskSchema,
+  getTaskSchema,
+  getTasksSchema,
+  updateTaskSchema,
+} from "../../../schema/task";
 import { trycatch } from "../../../utils/trycatch";
 import { createTRPCRouter, protectedProcedure } from "../trpc";
-
-export const getTasksSchema = z.object({
-  projectId: z.string(),
-  cursor: z.string().optional(),
-  limit: z.number().min(1).max(10).default(5),
-  statuses: z.array(z.enum(["NOT_STARTED", "IN_PROGRESS", "COMPLETED"])),
-  searches: z.array(
-    z.object({
-      category: z.enum(["DESCRIPTION", "ASSIGNED_TO", "ASSIGNED_BY"]),
-      value: z.string(),
-    })
-  ),
-});
-
-export const getTaskInfoSchema = z.object({
-  taskId: z.string(),
-});
-
-export const updateTaskSchema = z.object({
-  taskId: z.string(),
-  taskDescription: z.string(),
-  taskStatus: z
-    .enum(["NOT_STARTED", "IN_PROGRESS", "COMPLETED"])
-    .default("NOT_STARTED"),
-  taskAssignedTo: z
-    .object({
-      id: z.string(),
-      name: z.string().nullable(),
-      email: z.string().nullable(),
-      image: z.string().nullable(),
-    })
-    .nullable(),
-  limit: z.number().min(1).max(10).default(5),
-});
-
-export const deleteTaskSchema = z.object({
-  taskId: z.string(),
-});
 
 export const taskRouter = createTRPCRouter({
   createTask: protectedProcedure
@@ -144,7 +111,7 @@ export const taskRouter = createTRPCRouter({
       })();
     }),
   getTask: protectedProcedure
-    .input(getTaskInfoSchema)
+    .input(getTaskSchema)
     .query(async ({ ctx, input }) => {
       return await trycatch({
         fn: () => {
