@@ -1,14 +1,10 @@
-import { z } from "zod";
 import {
   createLaborerSchema,
+  deleteLaborerSchema,
   updateLaborerSchema,
 } from "../../../schema/laborer";
 import { trycatch } from "../../../utils/trycatch";
 import { createTRPCRouter, protectedProcedure } from "../trpc";
-
-export const deleteLaborerSchema = z.object({
-  laborerId: z.string(),
-});
 
 export const laborerRouter = createTRPCRouter({
   createLaborer: protectedProcedure

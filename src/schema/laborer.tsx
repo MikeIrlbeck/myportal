@@ -18,3 +18,5 @@ const laborerIdSchema = z.object({
 export const updateLaborerSchema = createLaborerSchema
   .omit({ siteDiaryId: true })
   .merge(laborerIdSchema);
+
+export const deleteLaborerSchema = laborerIdSchema;
