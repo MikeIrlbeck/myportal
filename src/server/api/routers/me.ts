@@ -1,41 +1,13 @@
 import { TRPCError } from "@trpc/server";
-import { z } from "zod";
+import {
+  getMyProfessionalRoleSchema,
+  hasPermissionToProjectSchema,
+  isCreatorOfProjectSchema,
+  updateMyProfessionalRoleSchema,
+} from "../../../schema/me";
 import { trycatch } from "../../../utils/trycatch";
 import type { createInnerTRPCContext } from "../trpc";
 import { createTRPCRouter, protectedProcedure } from "../trpc";
-
-export const hasPermissionToProjectSchema = z.object({
-  projectId: z.string(),
-});
-
-export const isCreatorOfProjectSchema = z.object({
-  projectId: z.string(),
-});
-
-export const getMyProfessionalRoleSchema = z.object({
-  projectId: z.string(),
-});
-
-export const deleteMyAccountSchema = z.object({
-  projectId: z.string(),
-});
-
-export const updateMyProfessionalRoleSchema = z.object({
-  projectId: z.string(),
-  userProfessionalRole: z.enum([
-    "ACCOUNTANT",
-    "DOCUMENT_CONTROLLER",
-    "FOREMAN",
-    "PROJECT_ENGINEER",
-    "PROJECT_MEMBER",
-    "PROJECT_MANAGER",
-    "PROJECT_DIRECTOR",
-    "QUANTITY_SURVEYOR",
-    "SITE_SUPERVISOR",
-    "SITE_ENGINEER",
-    "SITE_ADMIN",
-  ]),
-});
 
 export const userHasPermissionToProject = async ({
   ctx,
