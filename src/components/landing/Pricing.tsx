@@ -56,7 +56,7 @@ function Plan({
 }: {
   name: string;
   price: string;
-  description: string;
+  description?: string;
   href: string;
   features: string[];
   featured?: boolean;
@@ -129,46 +129,41 @@ export function Pricing() {
         </div>
         <div className="-mx-4 mt-16 grid max-w-2xl grid-cols-1 gap-y-10 sm:mx-auto lg:-mx-8 lg:max-w-none lg:grid-cols-3 xl:mx-0 xl:gap-x-8">
           <Plan
-            name="Starter"
-            price="Free"
-            description="Good for anyone who is self-employed and just getting started."
+            name="Online Demo Package"
+            price="FREE for 3 months"
+            description="Limited-time offer for attendees of our online demo. Deal closes July 29th."
             href="sign-in"
             features={[
-              "20 invoices per month",
-              "Up to 3 users",
-              "Financial dashboard",
+              "100 invoices/ month",
+              "5 team members",
+              "Invoices approval",
+              "Export to excel",
               "Site diary",
-              "Tasks",
               "File sharing",
+              "Tasks allocations",
             ]}
           />
           <Plan
             featured
-            name="Small business"
-            price="RM 98 per month per project"
+            name="Start Up"
+            price="RM98/ Project/ Month"
             description="Perfect for small & medium sized businesses."
             href="sign-in"
             features={[
-              "150 invoices per month", 
-              "Up to 20 users",
-              "Financial dashboard",
-              "Site diary",
-              "Tasks",
-              "File sharing",
+              "250 invoices/ month",
+              "20 team members",
+              "Everything included in Online Demo Package",
             ]}
           />
           <Plan
             name="Enterprise"
-            price="RM 248 per month per project"
+            price="RM248/ Project/ Month"
             description="For even the biggest enterprise companies."
             href="sign-in"
             features={[
-              "450 invoices per month", 
-              "Up to 50 users",
-              "Financial dashboard",
-              "Site diary",
-              "Tasks",
-              "File sharing",
+              "600 invoices/ month",
+              "Unlimited team members",
+              "Everything included in Online Demo Package",
             ]}
           />
         </div>
