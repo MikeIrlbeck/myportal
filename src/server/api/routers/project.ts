@@ -1,40 +1,17 @@
 import type { PrismaClient } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 import type { Session } from "next-auth";
-import { z } from "zod";
-import { createProjectSchema } from "../../../schema/project";
+import {
+  addToProjectSchema,
+  createProjectSchema,
+  deleteProjectSchema,
+  getProjectCreatorSchema,
+  getProjectSchema,
+  removeFromProjectSchema,
+  updateProjectSchema,
+} from "../../../schema/project";
 import { trycatch } from "../../../utils/trycatch";
 import { createTRPCRouter, protectedProcedure } from "../trpc";
-
-export const getProjectSchema = z.object({
-  projectId: z.string(),
-});
-
-export const updateProjectSchema = z.object({
-  projectId: z.string(),
-  projectName: z.string(),
-});
-
-export const deleteProjectSchema = z.object({
-  projectId: z.string(),
-});
-
-export const addToProjectSchema = z.object({
-  projectId: z.string(),
-  userId: z.string(),
-  userName: z.string(),
-  userEmail: z.string(),
-  userImage: z.string(),
-});
-
-export const removeFromProjectSchema = z.object({
-  projectId: z.string(),
-  userToBeRemovedId: z.string(),
-});
-
-export const getProjectCreatorSchema = z.object({
-  projectId: z.string(),
-});
 
 export async function userIsProjectCreator({
   prisma,

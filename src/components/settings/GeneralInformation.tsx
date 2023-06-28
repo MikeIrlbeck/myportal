@@ -94,7 +94,12 @@ const GeneralInformation = ({
   } = useForm<FormValues>({
     resolver: zodResolver(updateProjectSchema),
     values: {
+      projectId: project.id,
       projectName: project.name,
+    },
+    defaultValues: {
+      projectId: project.id,
+      projectName: "name",
     },
   });
 
