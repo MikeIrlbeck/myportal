@@ -2,8 +2,14 @@ import { S3 } from "aws-sdk";
 import type { Delete } from "aws-sdk/clients/s3";
 import type { FileArray, FileData } from "chonky";
 import path from "path";
-import { z } from "zod";
 import { env } from "../../../env/server.mjs";
+import {
+  createFolderSchema,
+  deleteS3ObjectSchema,
+  fetchS3BucketContentsSchema,
+  getPreSignedURLForDownloadSchema,
+  getPreSignedURLForUploadSchema,
+} from "../../../schema/s3";
 import { trycatch } from "../../../utils/trycatch";
 import { createTRPCRouter, protectedProcedure } from "../trpc";
 import { userHasPermissionToProjectOrThrow } from "./me";
@@ -17,38 +23,6 @@ const s3Config = {
 };
 
 const s3 = new S3(s3Config);
-
-export const fetchS3BucketContentsSchema = z.object({
-  prefix: z.string(),
-  projectId: z.string(),
-  aws_s3_bucket_name: z.string(),
-});
-
-export const deleteS3ObjectSchema = z.object({
-  prefix: z.string(),
-  fileId: z.string(),
-  projectId: z.string(),
-  aws_s3_bucket_name: z.string(),
-});
-
-export const getPreSignedURLForDownloadSchema = z.object({
-  fileId: z.string(),
-  projectId: z.string(),
-  aws_s3_bucket_name: z.string(),
-});
-
-export const getPreSignedURLForUploadSchema = z.object({
-  fileId: z.string(),
-  projectId: z.string(),
-  aws_s3_bucket_name: z.string(),
-});
-
-export const createFolderSchema = z.object({
-  prefix: z.string(),
-  folderName: z.string(),
-  projectId: z.string(),
-  aws_s3_bucket_name: z.string(),
-});
 
 const removeFromStringIfStartsWith = (
   inputString: string,
