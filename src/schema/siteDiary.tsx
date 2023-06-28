@@ -17,3 +17,10 @@ export const updateSiteDiarySchema = createSiteDiarySchema
 export const getSiteDiaryInfoSchema = id;
 
 export const deleteSiteDiarySchema = id;
+
+export const getSiteDiariesSchema = z.object({
+  projectId: z.string().min(1, "A projectId is required"),
+  siteDiaryNames: z.array(z.string()),
+  startDate: z.date().optional(),
+  endDate: z.date().optional(),
+});
