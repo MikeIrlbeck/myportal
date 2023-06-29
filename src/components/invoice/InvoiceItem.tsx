@@ -1,20 +1,19 @@
-import type { SupplierInvoiceItem as PrismaSupplierInvoiceItem } from "@prisma/client";
+import { zodResolver } from "@hookform/resolvers/zod";
 import * as Dialog from "@radix-ui/react-dialog";
 import classNames from "classnames";
 import { useState, type BaseSyntheticEvent } from "react";
 import { useForm } from "react-hook-form";
+import type { z } from "zod";
+import { SupplierInvoiceItemSchema } from "../../schema/supplierInvoice";
 
-export type SupplierInvoiceItem = Omit<
-  PrismaSupplierInvoiceItem,
-  "createdBy" | "supplierInvoiceId" | "createdById" | "createdAt" | "updatedAt"
->;
+type FormValues = z.infer<typeof SupplierInvoiceItemSchema>;
 
 type InvoiceItemProps = {
   title?: string;
   index?: number;
-  invoiceItem: SupplierInvoiceItem;
-  addNew?: (data: SupplierInvoiceItem) => void;
-  onUpdate?: (data: SupplierInvoiceItem, index: number) => void;
+  invoiceItem: FormValues;
+  addNew?: (data: FormValues) => void;
+  onUpdate?: (data: FormValues, index: number) => void;
 };
 
 const InvoiceItem = ({
@@ -29,7 +28,8 @@ const InvoiceItem = ({
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm<SupplierInvoiceItem>({
+  } = useForm<FormValues>({
+    resolver: zodResolver(SupplierInvoiceItemSchema),
     values: {
       id: invoiceItem.id,
       description: invoiceItem.description,
@@ -41,7 +41,7 @@ const InvoiceItem = ({
   });
 
   const onSubmit = (
-    data: SupplierInvoiceItem,
+    data: FormValues,
     e: BaseSyntheticEvent<object, unknown, unknown> | undefined
   ) => {
     e?.preventDefault();
@@ -250,27 +250,27 @@ const InvoiceItem = ({
             </fieldset>
             {errors.description && (
               <span className="flex justify-center text-xs italic text-red-400">
-                Description is required
+                {errors.description.message}
               </span>
             )}
             {errors.quantity && (
               <span className="flex justify-center text-xs italic text-red-400">
-                Quantity is required
+                {errors.quantity.message}
               </span>
             )}
             {errors.unit && (
               <span className="flex justify-center text-xs italic text-red-400">
-                Unit is required
+                {errors.unit.message}
               </span>
             )}
             {errors.unitPrice && (
               <span className="flex justify-center text-xs italic text-red-400">
-                Unit price is required
+                {errors.unitPrice.message}
               </span>
             )}
             {errors.totalPrice && (
               <span className="flex justify-center text-xs italic text-red-400">
-                Total Price is required
+                {errors.totalPrice.message}
               </span>
             )}
             <div className="mt-5 sm:mt-6 sm:grid sm:grid-flow-row-dense sm:grid-cols-2 sm:gap-3">

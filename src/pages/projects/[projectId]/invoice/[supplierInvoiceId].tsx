@@ -1,20 +1,24 @@
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/router";
 import { useRef, useState, type BaseSyntheticEvent } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
+import type { z } from "zod";
 import PermissionToProject from "../../../../components/auth/PermissionToProject";
 import SessionAuth from "../../../../components/auth/SessionAuth";
-import type { SupplierInvoiceItem } from "../../../../components/invoice/InvoiceItem";
-import { env } from "../../../../env/client.mjs";
-import { useGetPreSignedURLForDownload } from "../../../../hooks/s3";
-
 import InvoiceEditableForm from "../../../../components/invoice/InvoiceEditableForm";
+import { env } from "../../../../env/client.mjs";
 import { useGetBudget } from "../../../../hooks/budget";
+import { useGetPreSignedURLForDownload } from "../../../../hooks/s3";
 import {
   useGetSupplierInvoice,
   useUpdateSupplierInvoice,
 } from "../../../../hooks/supplierInvoice";
-import type { SupplierInvoiceWithItems } from "./add";
+import type { SupplierInvoiceItemSchema } from "../../../../schema/supplierInvoice";
+import { updateSupplierInvoiceSchema } from "../../../../schema/supplierInvoice";
+
+type FormValues = z.infer<typeof updateSupplierInvoiceSchema>;
+type ItemSchema = z.infer<typeof SupplierInvoiceItemSchema>;
 
 const SupplierInvoiceView = () => {
   const router = useRouter();
@@ -23,21 +27,18 @@ const SupplierInvoiceView = () => {
   const hiddenAnchorRef = useRef<HTMLAnchorElement | null>(null);
 
   const [supplierInvoiceItems, setSupplierInvoiceItems] = useState<
-    SupplierInvoiceItem[] | undefined
+    ItemSchema[] | undefined
   >(undefined);
 
   const { supplierInvoiceData, isLoading } = useGetSupplierInvoice({
     supplierInvoiceId: supplierInvoiceId,
-    onSucess: (supplierInvoiceItems: SupplierInvoiceItem[]) =>
+    onSucess: (supplierInvoiceItems: ItemSchema[]) =>
       setSupplierInvoiceItems(supplierInvoiceItems),
   });
 
   const { getPreSignedURLForDownload } = useGetPreSignedURLForDownload();
 
-  const onInvoiceItemUpdate = (
-    invoiceItem: SupplierInvoiceItem,
-    index: number
-  ) => {
+  const onInvoiceItemUpdate = (invoiceItem: ItemSchema, index: number) => {
     if (!supplierInvoiceItems) return;
     const newSupplierInvoiceItems = [...supplierInvoiceItems];
     newSupplierInvoiceItems[index] = invoiceItem;
@@ -51,7 +52,8 @@ const SupplierInvoiceView = () => {
     setSupplierInvoiceItems(newSupplierInvoiceItems);
   };
 
-  const useFormReturn = useForm<SupplierInvoiceWithItems>({
+  const useFormReturn = useForm<FormValues>({
+    resolver: zodResolver(updateSupplierInvoiceSchema),
     defaultValues: {
       id: "",
       invoiceNo: "",
@@ -81,7 +83,7 @@ const SupplierInvoiceView = () => {
   });
 
   const onSubmit = (
-    data: SupplierInvoiceWithItems,
+    data: FormValues,
     e: BaseSyntheticEvent<object, unknown, unknown> | undefined
   ) => {
     e?.preventDefault();

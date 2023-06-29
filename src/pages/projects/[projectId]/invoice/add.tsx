@@ -3,6 +3,7 @@ import {
   ChevronRightIcon,
   PlusIcon,
 } from "@heroicons/react/20/solid";
+import { zodResolver } from "@hookform/resolvers/zod";
 import classNames from "classnames";
 import { nanoid } from "nanoid";
 import dynamic from "next/dynamic";
@@ -14,34 +15,23 @@ import toast from "react-hot-toast";
 import { pdfjs } from "react-pdf";
 import "react-pdf/dist/esm/Page/AnnotationLayer.css";
 import "react-pdf/dist/esm/Page/TextLayer.css";
+import type { z } from "zod";
 import PermissionToProject from "../../../../components/auth/PermissionToProject";
 import SessionAuth from "../../../../components/auth/SessionAuth";
 import ConfirmationDialog from "../../../../components/invoice/ConfirmationDialog";
 import InvoiceEditableForm from "../../../../components/invoice/InvoiceEditableForm";
-import type { SupplierInvoiceItem } from "../../../../components/invoice/InvoiceItem";
 import { env } from "../../../../env/client.mjs";
 import { useGetBudget } from "../../../../hooks/budget";
 import { useExtractInvoiceInfo } from "../../../../hooks/gpt";
 import { useGetPreSignedURLForUpload } from "../../../../hooks/s3";
 import { useCreateSupplierInvoice } from "../../../../hooks/supplierInvoice";
+import type { SupplierInvoiceItemSchema } from "../../../../schema/supplierInvoice";
+import { updateSupplierInvoiceSchema } from "../../../../schema/supplierInvoice";
 import { api } from "../../../../utils/api";
 import { extractTextFromPDFDocumentProxy } from "../../../../utils/pdfparser";
 
-export type SupplierInvoiceWithItems = {
-  id: string;
-  invoiceNo: string;
-  invoiceDate: Date;
-  supplierName: string;
-  subtotal: number;
-  taxes: number;
-  discount: number;
-  grandTotal: number;
-  fileId: string | undefined;
-  budgetId: string;
-  paid: boolean;
-  approved: boolean;
-  supplierInvoiceItems: SupplierInvoiceItem[];
-};
+type FormValues = z.infer<typeof updateSupplierInvoiceSchema>;
+type ItemSchema = z.infer<typeof SupplierInvoiceItemSchema>;
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
 
@@ -66,14 +56,15 @@ const AddInvoicePage = () => {
   const projectId = router.query.projectId as string;
 
   const [supplierInvoiceItems, setSupplierInvoiceItems] = useState<
-    SupplierInvoiceItem[] | undefined
+    ItemSchema[] | undefined
   >([]);
 
   const { getPreSignedURLForUpload } = useGetPreSignedURLForUpload();
   const { data, isLoading, extractInvoiceInfo } = useExtractInvoiceInfo();
   const [fileId, setFileId] = useState("");
 
-  const useFormReturn = useForm<SupplierInvoiceWithItems>({
+  const useFormReturn = useForm<FormValues>({
+    resolver: zodResolver(updateSupplierInvoiceSchema),
     defaultValues: {
       id: "",
       invoiceNo: "",
@@ -117,10 +108,7 @@ const AddInvoicePage = () => {
     }
   }, [data]);
 
-  const onInvoiceItemUpdate = (
-    invoiceItem: SupplierInvoiceItem,
-    index: number
-  ) => {
+  const onInvoiceItemUpdate = (invoiceItem: ItemSchema, index: number) => {
     if (!supplierInvoiceItems) return;
     const newSupplierInvoiceItems = [...supplierInvoiceItems];
     newSupplierInvoiceItems[index] = invoiceItem;
@@ -135,14 +123,14 @@ const AddInvoicePage = () => {
   };
 
   const onSubmit = (
-    data: SupplierInvoiceWithItems,
+    data: FormValues,
     e: BaseSyntheticEvent<object, unknown, unknown> | undefined
   ) => {
     e?.preventDefault();
     void uploadDocument(data);
   };
 
-  const uploadDocument = async (data: SupplierInvoiceWithItems) => {
+  const uploadDocument = async (data: FormValues) => {
     if (fileToUpload == null) {
       toast.error("No file detected.");
     } else {

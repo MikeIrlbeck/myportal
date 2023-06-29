@@ -15,13 +15,19 @@ import ReactDatePicker from "react-datepicker";
 import type { UseFormReturn } from "react-hook-form";
 import { Controller } from "react-hook-form";
 import toast from "react-hot-toast";
+import type { z } from "zod";
 import { useGetBudgets } from "../../hooks/budget";
-import type { SupplierInvoiceWithItems } from "../../pages/projects/[projectId]/invoice/add";
+import type {
+  SupplierInvoiceItemSchema,
+  updateSupplierInvoiceSchema,
+} from "../../schema/supplierInvoice";
 import { api } from "../../utils/api";
 import SelectList from "../common/SelectList";
 import Spinner from "../common/Spinner";
-import type { SupplierInvoiceItem } from "./InvoiceItem";
 import InvoiceItem from "./InvoiceItem";
+
+type ItemSchema = z.infer<typeof SupplierInvoiceItemSchema>;
+type InvoiceSchema = z.infer<typeof updateSupplierInvoiceSchema>;
 
 const InvoiceEditableForm = ({
   onSubmit,
@@ -36,20 +42,15 @@ const InvoiceEditableForm = ({
   fileInputRef,
 }: {
   onSubmit: (
-    data: SupplierInvoiceWithItems,
+    data: InvoiceSchema,
     e: BaseSyntheticEvent<object, unknown, unknown> | undefined
   ) => void;
   fileId?: string;
   handleDownloadFile?: () => Promise<void>;
-  useFormReturn: UseFormReturn<SupplierInvoiceWithItems, unknown>;
-  supplierInvoiceItems?: SupplierInvoiceItem[];
-  setSupplierInvoiceItems: Dispatch<
-    SetStateAction<SupplierInvoiceItem[] | undefined>
-  >;
-  onInvoiceItemUpdate: (
-    invoiceItem: SupplierInvoiceItem,
-    index: number
-  ) => void;
+  useFormReturn: UseFormReturn<InvoiceSchema, unknown>;
+  supplierInvoiceItems?: ItemSchema[];
+  setSupplierInvoiceItems: Dispatch<SetStateAction<ItemSchema[] | undefined>>;
+  onInvoiceItemUpdate: (invoiceItem: ItemSchema, index: number) => void;
   removeInvoiceItem: (index: number) => void;
   isLoading?: boolean;
   fileInputRef?: MutableRefObject<HTMLInputElement | null>;

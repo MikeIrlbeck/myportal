@@ -1,81 +1,14 @@
 import { TRPCError } from "@trpc/server";
-import { z } from "zod";
+import {
+  createSupplierInvoiceSchema,
+  deleteSupplierInvoiceSchema,
+  getSupplierInvoiceSchema,
+  getSupplierInvoicesForCSVDownloadSchema,
+  getSupplierInvoicesSchema,
+  updateSupplierInvoiceSchema,
+} from "../../../schema/supplierInvoice";
 import { trycatch } from "../../../utils/trycatch";
 import { createTRPCRouter, protectedProcedure } from "../trpc";
-
-export const createSupplierInvoiceSchema = z.object({
-  invoiceNo: z.string(),
-  invoiceDate: z.date(),
-  supplierName: z.string(),
-  subtotal: z.number(),
-  taxes: z.number(),
-  discount: z.number(),
-  grandTotal: z.number(),
-  fileId: z.string().optional(),
-  projectId: z.string(),
-  budgetId: z.string(),
-  paid: z.boolean(),
-  approved: z.boolean(),
-  supplierInvoiceItems: z.array(
-    z.object({
-      description: z.string(),
-      quantity: z.number(),
-      unit: z.string(),
-      unitPrice: z.number(),
-      totalPrice: z.number(),
-    })
-  ),
-});
-
-export const getSupplierInvoicesSchema = z.object({
-  projectId: z.string(),
-  approved: z.boolean().optional(),
-  budgetId: z.string().optional(),
-  startDate: z.date().optional(),
-  endDate: z.date().optional(),
-});
-
-export const getSupplierInvoiceSchema = z.object({
-  supplierInvoiceId: z.string(),
-});
-
-export const updateSupplierInvoiceSchema = z.object({
-  id: z.string(),
-  invoiceNo: z.string(),
-  invoiceDate: z.date(),
-  supplierName: z.string(),
-  subtotal: z.number(),
-  taxes: z.number(),
-  discount: z.number(),
-  grandTotal: z.number(),
-  fileId: z.string().optional(),
-  projectId: z.string(),
-  budgetId: z.string(),
-  paid: z.boolean(),
-  approved: z.boolean(),
-  supplierInvoiceItems: z.array(
-    z.object({
-      id: z.string(),
-      description: z.string(),
-      quantity: z.number(),
-      unit: z.string(),
-      unitPrice: z.number(),
-      totalPrice: z.number(),
-    })
-  ),
-});
-
-export const deleteSupplierInvoiceSchema = z.object({
-  supplierInvoiceId: z.string(),
-});
-
-export const getSupplierInvoicesForCSVDownloadSchema = z.object({
-  projectId: z.string(),
-  approved: z.boolean().optional(),
-  budgetId: z.string().optional(),
-  startDate: z.date().optional(),
-  endDate: z.date().optional(),
-});
 
 export const supplierInvoiceRouter = createTRPCRouter({
   createSupplierInvoice: protectedProcedure

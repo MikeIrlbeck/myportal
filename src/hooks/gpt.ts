@@ -1,8 +1,35 @@
 import { isValid, parse } from "date-fns";
 import { nanoid } from "nanoid";
 import { useMemo } from "react";
-import type { SupplierInvoiceWithItems } from "../pages/projects/[projectId]/invoice/add";
+import type { z } from "zod";
+// import type { gptOutputSchema } from "../schema/gpt";
+import type { updateSupplierInvoiceSchema } from "../schema/supplierInvoice";
 import { api } from "../utils/api";
+
+type SchemaWithId = z.infer<typeof updateSupplierInvoiceSchema>;
+// type gptOutputSchema = z.infer<typeof gptOutputSchema>;
+
+// could not get a return type of 'useExtractInvoiceInfo' to work
+// type ExtractInvoiceInfoResult = {
+//   data: SchemaWithId | undefined;
+//   isLoading: boolean;
+//   extractInvoiceInfo: UseMutateFunction<{
+//     invoiceNo: string;
+//     invoiceDate: string;
+//     supplierName: string;
+//     subtotal: number;
+//     taxes: number;
+//     discount: number;
+//     grandTotal: number;
+//     supplierInvoiceItems: {
+//       description: string;
+//       quantity: number;
+//       unit: string;
+//       unitPrice: number;
+//       totalPrice: number;
+//     }[];
+//   }>;
+// };
 
 export const useExtractInvoiceInfo = () => {
   const {
@@ -39,7 +66,7 @@ export const useExtractInvoiceInfo = () => {
                   };
                 }
               ),
-            } as SupplierInvoiceWithItems)
+            } as SchemaWithId)
           : undefined,
       [data]
     ),
