@@ -16,7 +16,7 @@ const faqs = [
     {
       question: "How accurate is your AI?",
       answer:
-        "If you are using our invoice template provided, accuracy rate will be 100%. However, if you are using your own invoice template, we have between an 80-99% accuracy rate, but this improves as the AI learns your business and document types.",
+        "We have between an 80-99% accuracy rate, but this improves as the AI learns your business and document types.",
     },
     {
       question:
@@ -42,10 +42,6 @@ export function Faqs() {
           >
             Frequently asked questions
           </h2>
-          <p className="mt-4 text-lg tracking-tight text-slate-700">
-            If you can’t find what you’re looking for, email our support team
-            and if you’re lucky someone will get back to you.
-          </p>
         </div>
         <ul
           role="list"
