@@ -25,7 +25,7 @@ export const Hero = () => {
       </p>
       <div className="py-4">
         <a
-          href="https://www.youtube.com/watch?v=C_lheSLTTuQ"
+          href="https://www.youtube.com/watch?v=SoZSdqR3hOk"
           target="_blank"
           rel="noopener noreferrer"
         >
