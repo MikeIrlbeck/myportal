@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 
 import { Container } from "../common/Container";
 
+import dataUtilization from "../../../public/images/screenshots/data-utilization.png";
 import financialDashboard from "../../../public/images/screenshots/financial-dashboard.png";
 import invoiceApproval from "../../../public/images/screenshots/invoice-approval.png";
 import invoiceProcessing from "../../../public/images/screenshots/invoice-processing.png";
@@ -59,7 +60,7 @@ export const PrimaryFeatures = () => {
       case 2:
         return invoiceApproval;
       case 3:
-        return invoiceProcessing;
+        return dataUtilization;
       default:
         throw new Error("Invalid index");
     }
